@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /*
- * Servlet implementation class LoginServlet
+* Servlet implementation class LoginServlet
 */
 
 @WebServlet(description = "Login Servlet Testing", urlPatterns = { "/LoginServlet" }, initParams = {
@@ -19,19 +19,23 @@ import javax.servlet.http.HttpServletResponse;
 
 public class LoginServlet extends HttpServlet {
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// get request parameters for userID and password
 		String user = request.getParameter("user");
 		String pwd = request.getParameter("pwd");
-		// get servlet config init params
+
 		String userID = getServletConfig().getInitParameter("user");
 		String password = getServletConfig().getInitParameter("password");
+
 		if (!user.matches("^[A-Z][A-Za-z]{2,}$")) {
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
 			PrintWriter out = response.getWriter();
-			out.println(
-					"<font color=red>User name must start with capital letter and contain minimum 3 characters</font>");
+			out.println("<font color=red>User name must start with captial letter and contain min 3 characters</font>");
+			rd.include(request, response);
+		} else if (!pwd.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+			PrintWriter out = response.getWriter();
+			out.println("<font color=red>Password is not correct. Try again!</font>");
 			rd.include(request, response);
 		} else if (userID.equals(user) && password.equals(pwd)) {
 			request.setAttribute("user", user);
@@ -39,7 +43,7 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
 			PrintWriter out = response.getWriter();
-			out.println("<font color=red>Either user name or password is wrong.</font>");
+			out.println("<font color=red>Either user name or password is wrong</font>");
 			rd.include(request, response);
 		}
 	}
