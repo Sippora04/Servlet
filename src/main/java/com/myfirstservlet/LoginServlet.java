@@ -27,7 +27,13 @@ public class LoginServlet extends HttpServlet {
 		// get servlet config init params
 		String userID = getServletConfig().getInitParameter("user");
 		String password = getServletConfig().getInitParameter("password");
-		if (userID.equals(user) && password.equals(pwd)) {
+		if (!user.matches("^[A-Z][A-Za-z]{2,}$")) {
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+			PrintWriter out = response.getWriter();
+			out.println(
+					"<font color=red>User name must start with capital letter and contain minimum 3 characters</font>");
+			rd.include(request, response);
+		} else if (userID.equals(user) && password.equals(pwd)) {
 			request.setAttribute("user", user);
 			request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
 		} else {
